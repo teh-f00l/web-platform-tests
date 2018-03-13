@@ -301,7 +301,8 @@ def filter_whitelist_errors(data, errors):
 
     for i, (error_type, msg, path, line) in enumerate(errors):
         normpath = os.path.normcase(path)
-        # Allow whitelisting all lint errors except the IGNORED PATH lint,
+        # Allow whitelisting all 
+        errors except the IGNORED PATH lint,
         # which explains how to fix it correctly and shouldn't be ignored.
         if error_type in data and error_type != "IGNORED PATH":
             wl_files = data[error_type]
@@ -747,19 +748,9 @@ def changed_files(wpt_root):
 
 def lint_paths(kwargs, wpt_root):
     if kwargs.get("paths"):
-    #make new list in case there are multiple added directories
-        AllPaths=[]
-        for path in kwargs.get("paths"):
-            # create extension for called directory and merge it with the existing path
-            extension= path+'/'
-            newPath=(str(os.path.realpath(wpt_root))+'/'+ extension)
-            # get all files from new path
-            paths = list(all_filesystem_paths(newPath))
-            # add the extension to the strings for all files from the new path,
-            # so they may be called from the current directory
-            paths=list(map(lambda path : extension + path, paths))
-            # add all files from a given directory to our master list of files to check
-            AllPaths=paths+AllPaths
+        print(kwargs.get("paths"))
+        r = os.path.realpath(wpt_root)
+        paths = [os.path.relpath(os.path.realpath(x), r) for x in kwargs["paths"]]
     elif kwargs["all"]:
         paths = list(all_filesystem_paths(wpt_root))
     else:
